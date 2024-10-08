@@ -1,0 +1,27 @@
+{
+  "name": "znapi",
+  "version": "0.0.0",
+  "description": "Better JS API for zeronet-conservancy",
+  "type": "module",
+  "private": false,
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeronet-conservancy/znapi.git"
+  },
+  "keywords": [
+    "zeronet",
+    "0net",
+    "p2p",
+    "web3"
+  ],
+  "author": "caryoscelus",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/zeronet-conservancy/znapi/issues"
+  },
+  "homepage": "https://github.com/zeronet-conservancy/znapi#readme"
+}
