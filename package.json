@@ -5,7 +5,11 @@
   "type": "module",
   "private": false,
   "main": "index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/zeronet-conservancy/znapi/issues"
   },
-  "homepage": "https://github.com/zeronet-conservancy/znapi#readme"
+  "homepage": "https://github.com/zeronet-conservancy/znapi#readme",
+  "devDependencies": {
+    "typescript": "^5.6.2"
+  }
 }
