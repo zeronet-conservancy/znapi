@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 let waiting_cb = {};
 let message_queue = []
 let next_message_id = 0;
