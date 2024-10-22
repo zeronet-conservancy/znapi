@@ -1,177 +1,20 @@
-// @ts-nocheck
+import { ServerInfo, Config } from './common';
+import { WSAPI } from './ws';
 
-let waiting_cb = {};
-let message_queue = []
-let next_message_id = 0;
-let connected = false;
-let ws;
+interface ZNAPI {
+  getServerInfo(): Promise<ServerInfo>;
+};
 
-export const connectWS = () => {
-  if (ws)
-    return;
-  const wrapper_nonce = document.location.href.replace(/.*wrapper_nonce=([A-Za-z0-9]+).*/, "$1");
-  const origin = window.server_url || window.location.href.replace(/(\:\/\/.*?)\/.*/, "$1");
-  let proto;
-
-  if (origin.indexOf("https:") === 0) {
-    proto = {
-      ws: 'wss',
-      http: 'https'
-    };
+export const connect = (config: Config): ZNAPI => {
+  console.log('hiy');
+  if (config.useWS) {
+    const api = new WSAPI(config);
+    console.log('wsapi reate');
+    api.connect();
+    console.log('wsapi onnec');
+    return api;
   } else {
-    proto = {
-      ws: 'ws',
-      http: 'http'
-    };
+    // return new
+    throw undefined;
   }
-
-  // const ws_url = proto.ws + ":" + origin.replace(proto.http + ":", "") + "/ZeroNet-Internal/Websocket?wrapper_key=" + window.wrapper_key;
-  const ws_url = 'ws://127.0.0.1:43110/ZeroNet-Internal/Websocket'
-
-  ws = new WebSocket(ws_url);
-  ws.onmessage = onMessage;
-  ws.onopen = onOpenWebsocket;
-  ws.onerror = (e) => {
-    console.log('Error', e);
-  };
-  ws.onclose = onCloseWebsocket;
-  // return ws;
-};
-
-
-const onMessage = (e) => {
-  const message = JSON.parse(e.data);
-  const cmd = message.cmd;
-  if (cmd === "response") {
-    if (waiting_cb[message.to] != null) {
-      return waiting_cb[message.to](message.result);
-    } else {
-      console.log("Websocket callback not found:", message);
-    }
-  } else if (cmd === "ping") {
-    /* return response(message.id, "pong"); */
-  } else {
-    // err
-  }
-};
-
-const onOpenWebsocket = (e) => {
-  connected = true;
-  console.log('WS open!');
-  const msgs = [...message_queue];
-  for (let msg of msgs) {
-    ws.send(JSON.stringify(msg));
-  }
-  message_queue = [];
-  send({
-    cmd: 'serverInfo',
-  }, (info) => {
-    console.log('####\n', info);
-  });
-};
-
-const onCloseWebsocket = (e) => {
-  console.log('Connection closed');
-    /* this.wrapperWsInited = false; */
-    /* return setTimeout(() => {
-     *   if (e && e.code === 1000 && e.wasClean === false) {
-     *     return _this.ws_error = _this.notifications.add("connection", "error", "UiServer Websocket error, please reload the page.");
-     *   } else if (e && e.code === 1001 && e.wasClean === true) {
-     *
-     *   } else if (!_this.ws_error) {
-     *     return _this.ws_error = _this.notifications.add("connection", "error", "Connection with <b>UiServer Websocket</b> was lost. Reconnecting...");
-     *   }
-     * }, 1000); */
-};
-
-
-
-export const send = (message, cb) => {
-  message.id = next_message_id;
-  next_message_id += 1;
-
-  if (connected) {
-    ws.send(JSON.stringify(message));
-  } else {
-    console.log("Not connected, adding message to queue");
-    message_queue.push(message);
-  }
-  if (cb) {
-    waiting_cb[message.id] = cb;
-  }
-};
-
-export const getServerInfo = () => {
-  return new Promise((resolve, reject) => {
-    send({
-      cmd: 'serverInfo',
-      params: {},
-    }, (info) => {
-      resolve(info);
-    });
-  });
-};
-
-export const getSiteDetails = (address) => {
-  return new Promise((resolve, reject) => {
-    send({
-      cmd: 'siteDetails',
-      params: {
-        address
-      }
-    }, (details) => {
-      console.log(details)
-      if (details.error) {
-        reject(details);
-      } else {
-        resolve(details);
-      }
-    });
-  });
-};
-
-export const getSignerList = () => {
-  return new Promise((resolve, reject) => {
-    send({
-      cmd: 'signerList',
-      params: {},
-    }, (users) => {
-      resolve(users);
-    });
-  });
-};
-
-export const getSiteList = () => {
-  return new Promise((resolve, reject) => {
-    send({
-      cmd: 'siteList',
-      params: {},
-    }, (sites) => {
-      resolve(sites);
-    });
-  });
-};
-
-export const readFile = (address, innerPath) => {
-  return new Promise((resolve, reject) => {
-    send({
-      cmd: 'fileRead',
-      params: {
-        address,
-        inner_path: innerPath,
-      },
-    }, (res) => {
-      if (res.error) {
-        reject(res);
-      } else {
-        resolve(res.data);
-      }
-    });
-  });
-};
-
-export const getUserData = (address) => {
-  return readFile(address, 'profile/profile.json').then((data) => {
-    return JSON.parse(data);
-  });
 };
