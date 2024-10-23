@@ -1,20 +1,15 @@
-import { ServerInfo, Config } from './common';
+import { ZNAPI, Config } from './common';
 import { WSAPI } from './ws';
-
-interface ZNAPI {
-  getServerInfo(): Promise<ServerInfo>;
-};
+import { WWAPI } from './ww';
 
 export const connect = (config: Config): ZNAPI => {
-  console.log('hiy');
+  let cl;
   if (config.useWS) {
-    const api = new WSAPI(config);
-    console.log('wsapi reate');
-    api.connect();
-    console.log('wsapi onnec');
-    return api;
+    cl = WSAPI;
   } else {
-    // return new
-    throw undefined;
+    cl = WWAPI;
   }
+  const api = new cl(config);
+  api.connect();
+  return api;
 };

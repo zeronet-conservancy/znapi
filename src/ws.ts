@@ -1,11 +1,11 @@
-import { Config } from './common';
+import { Config, ZNAPI } from './common';
 
 type WaitingCb = {
   // TODO: get rid of any
   [key: number]: (...args: any[]) => any;
 };
 
-export class WSAPI {
+export class WSAPI implements ZNAPI {
   private waitingCb: WaitingCb = {};
   private messageQueue: any[] = [];
   private nextMsgId: number = 0;
