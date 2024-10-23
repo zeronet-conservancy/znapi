@@ -81,7 +81,7 @@ export class WSAPI implements ZNAPI {
     }
   }
 
-  public getServerInfo(): Promise<any> {
+  getServerInfo(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.send({
         cmd: 'serverInfo',
@@ -89,6 +89,12 @@ export class WSAPI implements ZNAPI {
       }, (info: any) => {
         resolve(info);
       });
+    });
+  }
+
+  requestPermission(permission: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      reject("Cannot request permissions in dev mode");
     });
   }
 }
