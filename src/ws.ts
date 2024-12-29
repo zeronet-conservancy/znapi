@@ -66,7 +66,7 @@ export class WSAPI implements ZNAPI {
     this.isConnected = false;
   }
 
-  public send(message: any, cb: any): void {
+  send(message: any, cb: any): void {
     message.id = this.nextMsgId;
     ++this.nextMsgId;
 
@@ -81,14 +81,31 @@ export class WSAPI implements ZNAPI {
     }
   }
 
-  getServerInfo(): Promise<any> {
+  sendWithResp(message: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.send({
-        cmd: 'serverInfo',
-        params: {},
-      }, (info: any) => {
-        resolve(info);
+      this.send(message, (resp: any) => {
+        resolve(resp);
       });
+    });
+  }
+
+  getServerInfo(): Promise<any> {
+    return this.sendWithResp({
+      cmd: 'serverInfo',
+      params: {},
+    });
+  }
+
+  // TODO: type
+  getSignerList(): Promise<any> {
+    return this.sendWithResp({
+      cmd: 'signerList',
+    });
+  }
+
+  getSiteList(): Promise<any> {
+    return this.sendWithResp({
+      cmd: 'siteList',
     });
   }
 
@@ -96,5 +113,23 @@ export class WSAPI implements ZNAPI {
     return new Promise((resolve, reject) => {
       reject("Cannot request permissions in dev mode");
     });
+  }
+
+  getSizeLimitRules(): Promise<any> {
+    return this.sendWithResp({
+      cmd: 'getSizeLimitRules',
+    });
+  }
+
+  addPrivateSizeLimitRule(address: string, rule: string, value: number, priority: number): Promise<void> {
+    return this.sendWithResp({
+      cmd: 'addPrivateSizeLimitRule',
+      params: {
+        address,
+        rule,
+        value,
+        priority,
+      },
+    }).then((r) => { return; });
   }
 }

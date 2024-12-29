@@ -71,6 +71,14 @@ export class WWAPI implements ZNAPI {
     });
   }
 
+  getSignerList(): Promise<any> {
+    return new Promise((resolve, reject) => reject(undefined));
+  }
+
+  getSiteList(): Promise<any> {
+    return new Promise((resolve, reject) => reject(undefined));
+  }
+
   requestPermission(permission: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.send({
@@ -80,5 +88,13 @@ export class WWAPI implements ZNAPI {
         resolve();
       });
     });
+  }
+
+  getSizeLimitRules(): Promise<any> {
+    return new Promise((resolve, reject) => reject(undefined));
+  }
+
+  addPrivateSizeLimitRule(address: string, rule: string, value: number, priority: number): Promise<void> {
+    return new Promise((resolve, reject) => reject(undefined));
   }
 }
