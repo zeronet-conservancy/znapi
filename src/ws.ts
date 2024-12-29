@@ -109,6 +109,15 @@ export class WSAPI implements ZNAPI {
     });
   }
 
+  getSiteDetails(address: string): Promise<any> {
+    return this.sendWithResp({
+      cmd: 'siteDetails',
+      params: {
+        address,
+      },
+    });
+  }
+
   requestPermission(permission: string): Promise<void> {
     return new Promise((resolve, reject) => {
       reject("Cannot request permissions in dev mode");

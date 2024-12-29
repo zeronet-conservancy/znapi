@@ -79,6 +79,10 @@ export class WWAPI implements ZNAPI {
     return new Promise((resolve, reject) => reject(undefined));
   }
 
+  getSiteDetails(address: string): Promise<any> {
+    return new Promise((resolve, reject) => reject(undefined));
+  }
+
   requestPermission(permission: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.send({
