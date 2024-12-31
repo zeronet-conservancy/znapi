@@ -1,11 +1,11 @@
-import { Config, ZNAPI } from './common';
+import { Config, ZNAPIGeneric } from './common';
 
 type WaitingCb = {
   // TODO: get rid of any
   [key: number]: (...args: any[]) => any;
 };
 
-export class WSAPI implements ZNAPI {
+export class WSAPI extends ZNAPIGeneric {
   private waitingCb: WaitingCb = {};
   private messageQueue: any[] = [];
   private nextMsgId: number = 0;
@@ -14,6 +14,7 @@ export class WSAPI implements ZNAPI {
   private wsUrl: string;
 
   constructor(config: Config) {
+    super();
     this.wsUrl = config.wsUrl || 'ws://127.0.0.1:43110/ZeroNet-Internal/Websocket';
   }
 
@@ -81,64 +82,9 @@ export class WSAPI implements ZNAPI {
     }
   }
 
-  sendWithResp(message: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.send(message, (resp: any) => {
-        resolve(resp);
-      });
-    });
-  }
-
-  getServerInfo(): Promise<any> {
-    return this.sendWithResp({
-      cmd: 'serverInfo',
-      params: {},
-    });
-  }
-
-  // TODO: type
-  getSignerList(): Promise<any> {
-    return this.sendWithResp({
-      cmd: 'signerList',
-    });
-  }
-
-  getSiteList(): Promise<any> {
-    return this.sendWithResp({
-      cmd: 'siteList',
-    });
-  }
-
-  getSiteDetails(address: string): Promise<any> {
-    return this.sendWithResp({
-      cmd: 'siteDetails',
-      params: {
-        address,
-      },
-    });
-  }
-
   requestPermission(permission: string): Promise<void> {
     return new Promise((resolve, reject) => {
       reject("Cannot request permissions in dev mode");
     });
-  }
-
-  getSizeLimitRules(): Promise<any> {
-    return this.sendWithResp({
-      cmd: 'getSizeLimitRules',
-    });
-  }
-
-  addPrivateSizeLimitRule(address: string, rule: string, value: number, priority: number): Promise<void> {
-    return this.sendWithResp({
-      cmd: 'addPrivateSizeLimitRule',
-      params: {
-        address,
-        rule,
-        value,
-        priority,
-      },
-    }).then((r) => { return; });
   }
 }
