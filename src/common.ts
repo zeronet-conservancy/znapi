@@ -9,6 +9,7 @@ export interface ZNAPI {
   getSizeLimitRules(): Promise<any>;
   getSiteDetails(address: string): Promise<any>;
   addPrivateSizeLimitRule(address: string, rule: string, value: number, priority: number): Promise<void>;
+  removePrivateSizeLimitRule(rule_id: number): Promise<void>;
 };
 
 export abstract class ZNAPIGeneric implements ZNAPI {
@@ -73,6 +74,15 @@ export abstract class ZNAPIGeneric implements ZNAPI {
         rule,
         value,
         priority,
+      },
+    }).then((r) => { return; });
+  }
+
+  removePrivateSizeLimitRule(rule_id: number): Promise<void> {
+    return this.sendWithResp({
+      cmd: 'removePrivateSizeLimitRule',
+      params: {
+        rule_id,
       },
     }).then((r) => { return; });
   }
