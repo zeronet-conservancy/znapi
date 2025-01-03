@@ -1,6 +1,6 @@
-import { ZNAPI, Config } from './common';
-import { WSAPI } from './ws';
-import { WWAPI } from './ww';
+import { ZNAPI, Config } from './common.js';
+import { WSAPI } from './ws.js';
+import { WWAPI } from './ww.js';
 
 export const connect = (config: Config): ZNAPI => {
   let cl;

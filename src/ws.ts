@@ -1,4 +1,4 @@
-import { Config, ZNAPIGeneric } from './common';
+import { Config, ZNAPIGeneric } from './common.js';
 
 type WaitingCb = {
   // TODO: get rid of any

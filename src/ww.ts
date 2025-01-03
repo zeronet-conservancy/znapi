@@ -1,4 +1,4 @@
-import { Config, ServerInfo, ZNAPI, ZNAPIGeneric } from './common';
+import { Config, ServerInfo, ZNAPI, ZNAPIGeneric } from './common.js';
 
 export class WWAPI extends ZNAPIGeneric {
   private waitingCb: {[key: number]: any}
