@@ -19,7 +19,11 @@ export abstract class ZNAPIGeneric implements ZNAPI {
   sendWithResp(message: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.send(message, (resp: any) => {
-        resolve(resp);
+        if (resp.error !== undefined) {
+          reject(new Error(resp.error));
+        } else {
+          resolve(resp);
+        }
       });
     });
   }
@@ -85,6 +89,15 @@ export abstract class ZNAPIGeneric implements ZNAPI {
         rule_id,
       },
     }).then((r) => { return; });
+  }
+
+  siteDiagnose(address: string): Promise<any> {
+    return this.sendWithResp({
+      cmd: 'siteDiagnose',
+      params: {
+        address,
+      },
+    });
   }
 };
 
