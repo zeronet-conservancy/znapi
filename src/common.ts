@@ -28,6 +28,13 @@ export abstract class ZNAPIGeneric implements ZNAPI {
     });
   }
 
+  ping(): Promise<string> {
+    return this.sendWithResp({
+      cmd: 'ping',
+      params: {},
+    });
+  }
+
   getServerInfo(): Promise<any> {
     return this.sendWithResp({
       cmd: 'serverInfo',
