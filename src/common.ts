@@ -117,6 +117,13 @@ export abstract class ZNAPIGeneric implements ZNAPI {
       },
     });
   }
+
+  remoteConnectionList() {
+    return this.sendWithResp({
+      cmd: 'remoteConnectionList',
+      params: {},
+    });
+  }
 };
 
 export interface Config {
