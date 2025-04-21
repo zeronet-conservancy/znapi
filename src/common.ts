@@ -106,6 +106,17 @@ export abstract class ZNAPIGeneric implements ZNAPI {
       },
     });
   }
+
+  siteFixUserPermissions(address: string, content_path: string, user_addresses: string[]) {
+    return this.sendWithResp({
+      cmd: 'siteFixUserPermissions',
+      params: {
+        address,
+        content_path,
+        user_addresses,
+      },
+    });
+  }
 };
 
 export interface Config {
