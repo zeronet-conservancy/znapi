@@ -124,6 +124,15 @@ export abstract class ZNAPIGeneric implements ZNAPI {
       params: {},
     });
   }
+
+  connectionSiteList(conn_id: number) {
+    return this.sendWithResp({
+      cmd: 'connectionSiteList',
+      params: {
+        conn_id,
+      },
+    });
+  }
 };
 
 export interface Config {
