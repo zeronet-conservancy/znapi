@@ -10,6 +10,8 @@ export interface ZNAPI {
   getSiteDetails(address: string): Promise<any>;
   addPrivateSizeLimitRule(address: string, rule: string, value: number, priority: number): Promise<void>;
   removePrivateSizeLimitRule(rule_id: number): Promise<void>;
+  siteFavorite(address: string): Promise<any>;
+  siteUnfavorite(address: string): Promise<any>;
 };
 
 export abstract class ZNAPIGeneric implements ZNAPI {
@@ -96,6 +98,24 @@ export abstract class ZNAPIGeneric implements ZNAPI {
         rule_id,
       },
     }).then((r) => { return; });
+  }
+
+  siteFavorite(address: string): Promise<any> {
+    return this.sendWithResp({
+      cmd: 'siteFavorite',
+      params: {
+        address,
+      },
+    });
+  }
+
+  siteUnfavorite(address: string): Promise<any> {
+    return this.sendWithResp({
+      cmd: 'siteUnfavorite',
+      params: {
+        address,
+      },
+    });
   }
 
   siteDiagnose(address: string): Promise<any> {
