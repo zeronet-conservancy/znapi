@@ -12,6 +12,8 @@ export interface ZNAPI {
   removePrivateSizeLimitRule(rule_id: number): Promise<void>;
   siteFavorite(address: string): Promise<any>;
   siteUnfavorite(address: string): Promise<any>;
+  siteLimitsUnsubscribe(address: string): Promise<string>;
+  siteLimitsSubscribe(address: string, priority: number): Promise<string>;
 };
 
 export abstract class ZNAPIGeneric implements ZNAPI {
@@ -114,6 +116,25 @@ export abstract class ZNAPIGeneric implements ZNAPI {
       cmd: 'siteUnfavorite',
       params: {
         address,
+      },
+    });
+  }
+
+  siteLimitsUnsubscribe(address: string): Promise<string> {
+    return this.sendWithResp({
+      cmd: 'siteLimitsUnsubscribe',
+      params: {
+        address,
+      },
+    });
+  }
+
+  siteLimitsSubscribe(address: string, priority: number): Promise<string> {
+    return this.sendWithResp({
+      cmd: 'siteLimitsSubscribe',
+      params: {
+        address,
+        priority,
       },
     });
   }
