@@ -16,9 +16,23 @@ export interface ZNAPI {
   siteLimitsSubscribe(address: string, priority: number): Promise<string>;
 };
 
+type Callback = (msg: any) => void;
+
 export abstract class ZNAPIGeneric implements ZNAPI {
   abstract connect(): void;
   abstract send(message: any, cb: any): void;
+
+  private callbacks: { [id: string]: Callback } = {};
+
+  setCallback(msg: string, cback: Callback): void {
+    this.callbacks[msg] = cback;
+  }
+  processCallback(cmd: string, message: any): void {
+    const cback = this.callbacks[cmd];
+    if (cback !== undefined) {
+      cback(message);
+    }
+  }
 
   sendWithResp(message: any): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -172,6 +186,14 @@ export abstract class ZNAPIGeneric implements ZNAPI {
       params: {
         conn_id,
       },
+    });
+  }
+
+  msgSubscribe(cback: Callback) {
+    this.setCallback('newMessage', cback);
+    return this.sendWithResp({
+      cmd: 'msgSubscribe',
+      params: {},
     });
   }
 };

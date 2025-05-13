@@ -57,6 +57,7 @@ export class WWAPI extends ZNAPIGeneric {
     } else if (cmd === 'wrapperClosedWebsocket') {
       // this.onCloseWebsocket()
     } else {
+      this.processCallback(cmd, message);
       // this.onRequest(cmd, message)
     }
   }

@@ -39,6 +39,7 @@ export class WSAPI extends ZNAPIGeneric {
       /* return response(message.id, "pong"); */
     } else {
       // err
+      this.processCallback(cmd, message);
     }
   }
 
