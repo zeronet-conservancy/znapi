@@ -10,6 +10,7 @@ export class WSAPI extends ZNAPIGeneric {
   private messageQueue: any[] = [];
   private nextMsgId: number = 0;
   private isConnected: boolean = false;
+  private isReconnecting: boolean = false;
   private ws?: WebSocket;
   private wsUrl: string;
 
@@ -24,6 +25,12 @@ export class WSAPI extends ZNAPIGeneric {
     this.ws.addEventListener('open', (...args) => this.onOpenWebsocket(...args));
     this.ws.addEventListener('error', (...args) => this.onError(...args));
     this.ws.addEventListener('close', (...args) => this.onCloseWebsocket(...args));
+  }
+
+  private reconnect(): void {
+    if (this.isReconnecting)
+      return;
+    setTimeout(() => { this.isReconnecting = false; this.connect(); }, 10000);
   }
 
   private onMessage(e: any): void {
@@ -45,6 +52,9 @@ export class WSAPI extends ZNAPIGeneric {
 
   private onError(e: any): void {
     console.log(e);
+    // TODO
+    this.isConnected = false;
+    this.reconnect();
   }
 
   private onOpenWebsocket(e: Event): void {
@@ -66,6 +76,7 @@ export class WSAPI extends ZNAPIGeneric {
     console.log('Connection closed');
     console.log(e);
     this.isConnected = false;
+    this.reconnect();
   }
 
   send(message: any, cb: any): void {
