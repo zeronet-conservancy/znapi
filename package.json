@@ -1,6 +1,6 @@
 {
   "name": "znapi",
-  "version": "0.0.14-alpha",
+  "version": "0.0.15-alpha",
   "description": "Better TS/JS API for zeronet-conservancy (WIP)",
   "private": false,
   "main": "dist/index.js",
