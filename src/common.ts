@@ -1,6 +1,9 @@
 
 export interface ZNAPI {
   connect(): void;
+  isConnected(): boolean;
+  triggerOnConnected(cb: () => void): void;
+  triggerOnDisconnected(cb: () => void): void;
   getServerInfo(): Promise<ServerInfo>;
   requestPermission(permission: string): Promise<void>;
   // TODO: types
@@ -20,6 +23,9 @@ type Callback = (msg: any) => void;
 
 export abstract class ZNAPIGeneric implements ZNAPI {
   abstract connect(): void;
+  abstract isConnected(): boolean;
+  abstract triggerOnConnected(cb: () => void): void;
+  abstract triggerOnDisconnected(cb: () => void): void;
   abstract send(message: any, cb: any): void;
 
   private callbacks: { [id: string]: Callback } = {};

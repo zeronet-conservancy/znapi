@@ -9,8 +9,10 @@ export class WSAPI extends ZNAPIGeneric {
   private waitingCb: WaitingCb = {};
   private messageQueue: any[] = [];
   private nextMsgId: number = 0;
-  private isConnected: boolean = false;
+  private _isConnected: boolean = false;
   private isReconnecting: boolean = false;
+  private onConnectedCb: (() => void)[] = [];
+  private onDisconnectedCb: (() => void)[] = [];
   private ws?: WebSocket;
   private wsUrl: string;
 
@@ -25,6 +27,18 @@ export class WSAPI extends ZNAPIGeneric {
     this.ws.addEventListener('open', (...args) => this.onOpenWebsocket(...args));
     this.ws.addEventListener('error', (...args) => this.onError(...args));
     this.ws.addEventListener('close', (...args) => this.onCloseWebsocket(...args));
+  }
+
+  isConnected(): boolean {
+    return this._isConnected;
+  }
+
+  triggerOnConnected(cb: () => void): void {
+    this.onConnectedCb.push(cb);
+  }
+
+  triggerOnDisconnected(cb: () => void): void {
+    this.onDisconnectedCb.push(cb);
   }
 
   private reconnect(): void {
@@ -53,12 +67,12 @@ export class WSAPI extends ZNAPIGeneric {
   private onError(e: any): void {
     console.log(e);
     // TODO
-    this.isConnected = false;
+    this._isConnected = false;
     this.reconnect();
   }
 
   private onOpenWebsocket(e: Event): void {
-    this.isConnected = true;
+    this._isConnected = true;
     console.log('WS open!');
     const msgs = [...this.messageQueue];
     for (let msg of msgs) {
@@ -70,12 +84,18 @@ export class WSAPI extends ZNAPIGeneric {
     }, (info: any) => {
       console.log('####\n', info);
     });
+    for (let cb of this.onConnectedCb) {
+      cb();
+    }
   }
 
   private onCloseWebsocket(e: Event): void {
     console.log('Connection closed');
     console.log(e);
-    this.isConnected = false;
+    this._isConnected = false;
+    for (let cb of this.onDisconnectedCb) {
+      cb();
+    }
     this.reconnect();
   }
 
@@ -83,7 +103,7 @@ export class WSAPI extends ZNAPIGeneric {
     message.id = this.nextMsgId;
     ++this.nextMsgId;
 
-    if (this.isConnected) {
+    if (this._isConnected) {
       this.ws!.send(JSON.stringify(message));
     } else {
       console.log("Not connected, adding message to queue", message);
