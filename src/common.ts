@@ -73,6 +73,15 @@ export abstract class ZNAPIGeneric implements ZNAPI {
     });
   }
 
+  getUserInfo(address: string): Promise<any> {
+    return this.sendWithResp({
+      cmd: 'userInfo',
+      params: {
+        address,
+      },
+    });
+  }
+
   getSiteList(): Promise<any> {
     return this.sendWithResp({
       cmd: 'siteList',
